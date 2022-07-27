@@ -17,7 +17,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/exercise")
 @RequiredArgsConstructor
-public class ExerciseController {
+public class ExerciseController { //qweqwe
 
     @GetMapping
     public List<GetExerciseRes> exerciseBySection(@Login KakaoId kakaoId, @RequestParam("section") Long sectionId){
