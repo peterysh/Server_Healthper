@@ -1,5 +1,6 @@
 package umc.healthper.domain.routine;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import umc.healthper.domain.routine.model.GetRoutineRes;
@@ -10,13 +11,9 @@ import umc.healthper.domain.routine.repository.RoutineRepository;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class RoutineService {
-    private static RoutineRepository repository;
-
-    @Autowired
-    public RoutineService(RoutineRepository repository){
-        this.repository = repository;
-    }
+    private final RoutineRepository repository;
 
     public PostRoutineRes pushRoutine(Long userId, PostRoutineReq req){
         PostRoutineRes res = repository.save(userId, req);

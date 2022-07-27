@@ -1,29 +1,30 @@
 package umc.healthper.api;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import umc.healthper.domain.login.model.KakaoId;
 import umc.healthper.domain.routine.RoutineService;
 import umc.healthper.domain.routine.model.GetRoutineRes;
 import umc.healthper.domain.routine.model.PostRoutineReq;
 import umc.healthper.domain.routine.model.PostRoutineRes;
+import umc.healthper.global.argumentresolver.Login;
 
 import java.util.List;
 
+@Slf4j
 @Controller
 @RequestMapping("/routines")
+@RequiredArgsConstructor
 public class RoutineController {
-    private static RoutineService routineService;
+    private final RoutineService routineService;
 
-    @Autowired
-    public RoutineController(RoutineService routineService) {
-        this.routineService = routineService;
-    }
-
-    @PostMapping("/{userId}")
+    @PostMapping
     @ResponseBody
-    public PostRoutineRes makeRoutine(@PathVariable Long userId, @RequestBody PostRoutineReq req){
-        PostRoutineRes res = routineService.pushRoutine(userId, req);
+    public PostRoutineRes makeRoutine(@Login Long kakaoId, @RequestBody PostRoutineReq req){
+        PostRoutineRes res = routineService.pushRoutine(kakaoId, req);
         return res;
     }
 
@@ -34,10 +35,11 @@ public class RoutineController {
         return routineInfo;
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping
     @ResponseBody
-    public List<GetRoutineRes> getRoutineList(@PathVariable Long userId){
-        List<GetRoutineRes> routines = routineService.getRoutines(userId);
+    public List<GetRoutineRes> getRoutineList(@Login Long kakaoId){
+
+        List<GetRoutineRes> routines = routineService.getRoutines(kakaoId);
         return routines;
     }
     

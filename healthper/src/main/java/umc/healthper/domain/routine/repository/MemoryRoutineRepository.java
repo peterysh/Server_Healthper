@@ -23,12 +23,14 @@ public class MemoryRoutineRepository implements RoutineRepository {
     @Override
     public PostRoutineRes save(Long userId, PostRoutineReq postRoutineReq) {
         String name = postRoutineReq.getName();
-        List<Section> sections = postRoutineReq.getSections();
+        String sections = sectionListToStr(postRoutineReq.getSections());
         int count = countRoutine(userId).size();
 
         Routine routine = new Routine(++sequence, userId, name, sections, count);
         store.put(sequence, routine);
-        return new PostRoutineRes(routine.getName(), routine.getSections(), routine.getPriori());
+
+        log.info("{sections_str}, {sections}",sections, postRoutineReq.getSections());
+        return new PostRoutineRes(routine.getName(), postRoutineReq.getSections(), routine.getPriori());
     }
 
     private List<Routine> countRoutine(Long userId) {
@@ -41,7 +43,8 @@ public class MemoryRoutineRepository implements RoutineRepository {
     @Override
     public GetRoutineRes getRoutine(Long routineId) {
         Routine routine = store.get(routineId);
-        GetRoutineRes response = new GetRoutineRes(routine.getId(), routine.getName(), routine.getSections(), routine.getPriori());
+        GetRoutineRes response = new GetRoutineRes(routine.getId(), routine.getName(),
+                strToSectionList(routine.getSections()), routine.getPriori());
         return response;
     }
 
@@ -57,7 +60,7 @@ public class MemoryRoutineRepository implements RoutineRepository {
         for (Routine routine : routines) {
             Long id = routine.getId();
             String name = routine.getName();
-            List<Section> sections = routine.getSections();
+            List<Section> sections = strToSectionList(routine.getSections());
             int priori = routine.getPriori();
             response.add(new GetRoutineRes(id,name,sections,priori));
         }
@@ -68,7 +71,8 @@ public class MemoryRoutineRepository implements RoutineRepository {
     public void changeInfo(Long routineId, PostRoutineReq postRoutineReq) {
         Routine routine = store.get(routineId);
         routine.setName(postRoutineReq.getName());
-        routine.setSections(postRoutineReq.getSections());
+        String sections = sectionListToStr(postRoutineReq.getSections());
+        routine.setSections(sections);
     }
 
     @Override
@@ -85,5 +89,23 @@ public class MemoryRoutineRepository implements RoutineRepository {
     @Override
     public Long getOwner(Long routineId) {
         return store.get(routineId).getUserId();
+    }
+
+    private List<Section> strToSectionList(String sections){
+        List<Section> res = new ArrayList<>();
+        for(int i=0;i<sections.length();i++){
+            if(sections.charAt(i) == '1')
+                res.add(Section.getSectionById(i));
+        }
+        return res;
+    }
+    private String sectionListToStr(List<Section> sections){
+        String res = "";
+        int[] arr = new int[10];
+        for (Section section : sections) {
+            int idx = section.getId();
+            arr[idx] = 1;
+        }
+        return arr.toString();
     }
 }

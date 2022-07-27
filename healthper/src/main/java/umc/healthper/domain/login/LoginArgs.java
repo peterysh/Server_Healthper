@@ -6,4 +6,5 @@ public interface LoginArgs{
     String grant_type = "authorization_code";
     String get_token_uri = "https://kauth.kakao.com/oauth/token";
     String get_profile_uri = "https://kapi.kakao.com/v2/user/me";
+    String kakao_auth = "https://kauth.kakao.com/oauth/authorize";
 }

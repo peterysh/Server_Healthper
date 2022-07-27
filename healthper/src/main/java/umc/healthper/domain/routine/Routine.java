@@ -13,7 +13,7 @@ public class Routine {
     private Long id;
     private Long userId;
     private String name;
-    private List<Section> sections;
+    private String sections;
     private int priori;
 
 }
