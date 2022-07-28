@@ -31,13 +31,14 @@ public class LoginController {
     @GetMapping("/login")
     public String login(@RequestParam("code")String code,
                         @RequestParam(defaultValue = "/routines") String redirectURL,HttpServletRequest request) throws JsonProcessingException {
-        Long loginId = loginService.kakoLogin(code);
-        if(loginId == null){
+        Long kakaoKey = loginService.kakoLogin(code);
+        if(kakaoKey == null){
             return "redirect:/home";
         }
         HttpSession session = request.getSession();
         //세션에 로그인 회원 정보 보관
-        session.setAttribute(SessionConst.LOGIN_MEMBER, loginId);
+        Long userId = kakaoKey;//userService.getId(kakaoKey);//카카오 키에 해당 되는 유저 아이디 가져외
+        session.setAttribute(SessionConst.LOGIN_MEMBER, userId);
 
         return "redirect:"+redirectURL;
     }
